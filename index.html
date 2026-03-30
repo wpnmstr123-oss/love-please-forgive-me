@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-select=none">
+    <title>I'm really sorry love, vent your anger</title>
+    <style>
+        :root { --gold: #ffcc00; --red: #ff4757; --grey: #1a1a1a; --dark: #000000; --pink: #ff85a2; --blue: #3498db; --green: #2ed573; }
+        
+        body {
+            margin: 0; height: 100vh; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; background: var(--grey); 
+            font-family: 'Segoe UI', sans-serif; overflow: hidden;
+            transition: background 2s ease; touch-action: manipulation;
+        }
+
+        #audio-unlock {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--dark); z-index: 1000; display: flex;
+            flex-direction: column; align-items: center; justify-content: center;
+            color: white; cursor: pointer; padding: 20px; text-align: center;
+        }
+
+        #story-box {
+            position: absolute; top: 15px; width: 85%; background: var(--dark);
+            padding: 12px; border-radius: 15px; text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 10;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        #dialogue { font-size: 0.9rem; font-weight: bold; color: #fff; }
+
+        .stage { display: flex; align-items: center; gap: 40px; margin-top: 40px; position: relative; }
+        .char-container { display: flex; flex-direction: column; align-items: center; z-index: 5; }
+        #zee, #dee { font-size: 85px; transition: 0.1s; position: relative; }
+        
+        .hud { display: flex; flex-direction: column; gap: 2px; margin-bottom: 10px; width: 90px; text-align: center; }
+        .player-name { color: white; font-size: 10px; font-weight: 900; text-transform: uppercase; }
+        .mini-meter { width: 100%; height: 8px; background: #333; border-radius: 4px; overflow: hidden; border: 1px solid #000; }
+        #rage-fill { width: 0%; height: 100%; background: var(--gold); transition: width 0.2s; }
+        #dee-hp-fill { width: 100%; height: 100%; background: var(--green); transition: width 0.3s; }
+
+        #letter-modal {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
+            width: 85%; max-height: 80%; background: #fdf5e6; color: #5d4037;
+            padding: 25px; border-radius: 10px; border: 3px solid #d7ccc8;
+            box-shadow: 0 0 50px rgba(0,0,0,0.9); z-index: 2000;
+            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow-y: auto; font-size: 0.85rem; line-height: 1.6;
+        }
+        #letter-modal.active { transform: translate(-50%, -50%) scale(1); }
+
+        .punch-anim { animation: lunge 0.2s forwards; }
+        .kick-anim { animation: kick-lunge 0.35s forwards; }
+        .recoil { animation: recoil-bounce 0.3s forwards; }
+        @keyframes lunge { 0% { transform: translateX(0); } 50% { transform: translateX(130px); } 100% { transform: translateX(0); } }
+        @keyframes kick-lunge { 0% { transform: translateX(0); } 50% { transform: translateX(150px) scale(1.1); } 100% { transform: translateX(0); } }
+        @keyframes recoil-bounce { 0% { transform: translateX(0); } 50% { transform: translateX(-100px) rotate(-15deg); } 100% { transform: translateX(0); } }
+
+        #skill-bar { position: absolute; bottom: 30px; display: flex; gap: 8px; width: 90%; justify-content: center; }
+        .skill-btn { background: #222; color: white; border: 1px solid #444; padding: 15px; border-radius: 12px; font-weight: bold; flex: 1; font-size: 0.8rem; display: flex; flex-direction: column; align-items: center; }
+        #rage-btn { border: 2px solid var(--gold); background: #5a4a00; color: var(--gold); display: none; }
+
+        #btn-group { display: none; flex-direction: column; gap: 12px; margin-top: 30px; width: 80%; }
+        .btn { padding: 15px; border-radius: 30px; border: none; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
+
+        #flash-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: white; opacity: 0; pointer-events: none; transition: 1.5s; z-index: 100; }
+        @keyframes floatUp { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-100vh); opacity: 0; } }
+    </style>
+</head>
+<body>
+
+    <div id="audio-unlock" onclick="initAudio()">
+        <h2>I'm really sorry love.</h2>
+        <p>Tap to start</p>
+    </div>
+
+    <div id="letter-modal">
+        <h3 style="text-align:center; margin-top:0;">My Dearest Zee,</h3>
+        <p>I'm sorry for ending our call natatakot lang ako sayo, I'm sorry I really want to rank you acc up kasi yung sinabi mo sa akin na ipa rank up ka it kept on repeating on my head natatakot din ako na baka sabihin mo na codm mo hindi ko pina rank up pati ml mo din ba.</p>
+        <p>I'm sorry hindi ko min-mean lahat ng sinabi ko, I'm sorry kin-compare ko yung sarili ko sa ibang tao, I'm sorry dahil sa akin nasabunutan ka pa ni mama.</p>
+        <p>I'm sorry naappreciate ko yung bag na binili mo para sa akin tsaka bracelet along with a letter sorry sa lahat ng nagawa ko hindi ko na uulitin.</p>
+        <p>I'm sorry for acting like this I also just dont know how to handle you as of now I dont know how to make you open up to me about how you feel without getting mad, I do know you're sad and I do know I made a mistake for making you feel like this.</p>
+        <p>Let me be clear love ayoko makipaghiwalay, I want our relationship to last, I promise hindi na to mauulit, I'm sorry sa lahat, please forgive me love.</p>
+        <button class="btn" style="width:100%; background:var(--green); color:white; margin-top:15px;" onclick="forgiveFromLetter()">Forgive Me ❤️</button>
+    </div>
+
+    <div id="flash-overlay"></div>
+    <div id="story-box"><div id="dialogue">I'm really sorry love, vent your anger</div></div>
+    
+    <div class="stage">
+        <div id="home-bg" style="position:absolute; font-size:150px; opacity:0; transition:2s; z-index:1; pointer-events:none;">🏠</div>
+        <div class="char-container">
+            <div class="hud" id="zee-hud">
+                <div class="player-name">ZEE</div>
+                <div class="mini-meter"><div id="rage-fill"></div></div>
+            </div>
+            <div id="zee">😤</div>
+        </div>
+        <div class="char-container">
+            <div class="hud" id="dee-hud">
+                <div class="player-name">DEE</div>
+                <div class="mini-meter"><div id="dee-hp-fill"></div></div>
+            </div>
+            <div id="dee">🧍‍♂️</div>
+        </div>
+    </div>
+
+    <div id="btn-group">
+        <button class="btn" id="open-letter-btn" style="background:white; color:black; display:none;" onclick="openLetter()">Open Letter ✉️</button>
+        <button class="btn" id="retry-btn" style="background:var(--red); color:white; display:none;" onclick="resetAnger(true)">No, punch him again 🥊</button>
+        <button class="btn" id="forgive-btn" style="background:var(--green); color:white; display:none;" onclick="finish()">Yes, I'm okay now ❤️</button>
+        <button class="btn" id="hug-btn" style="background:var(--gold); color:#000; display:none;" onclick="hugAction()">Hug 🫂</button>
+    </div>
+
+    <div id="skill-bar">
+        <button class="skill-btn" onclick="useSkill('punch')"><span>🥊</span>Punch</button>
+        <button class="skill-btn" onclick="useSkill('kick')"><span>🦵</span>Kick</button>
+        <button class="skill-btn" onclick="useSkill('barrage')"><span>🔥</span>Barrage</button>
+        <button class="skill-btn" id="rage-btn" onclick="useSkill('ultra')"><span>ULTRA ORA</span></button>
+    </div>
+
+    <script>
+        let hp = 100; let rage = 0; let isAttacking = false; let hasReadLetter = false;
+        const zee = document.getElementById('zee'); const dee = document.getElementById('dee');
+        const diag = document.getElementById('dialogue');
+        const deeHpFill = document.getElementById('dee-hp-fill');
+        const rageFill = document.getElementById('rage-fill'); const rageBtn = document.getElementById('rage-btn');
+        const skillBar = document.getElementById('skill-bar'); const btnGroup = document.getElementById('btn-group');
+        const flash = document.getElementById('flash-overlay');
+
+        let audioCtx;
+        function initAudio() {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            document.getElementById('audio-unlock').style.display = 'none';
+        }
+
+        function playSound(freq, type, duration, vol, falloff = true) {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+            osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            if(falloff) osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + duration);
+            gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(); osc.stop(audioCtx.currentTime + duration);
+        }
+
+        function playVictoryMelody() {
+            if (!audioCtx) return;
+            const notes = [523.25, 659.25, 783.99, 1046.50]; 
+            notes.forEach((freq, i) => {
+                setTimeout(() => playSound(freq, 'sine', 0.6, 0.1, false), i * 150);
+            });
+        }
+
+        function useSkill(type) {
+            if (hp <= 0 || isAttacking) return;
+            isAttacking = true; zee.innerText = "😠"; 
+            if (type === 'punch') { 
+                executeStrike(0.4, 30, "POW!"); playSound(350, 'square', 0.1, 0.1);
+                setTimeout(() => { executeStrike(0.4, 30, "BAM!"); playSound(300, 'square', 0.1, 0.1); isAttacking = false; }, 200); 
+            } 
+            else if (type === 'kick') { 
+                executeStrike(1.5, 80, "CRACK!", true); playSound(150, 'sawtooth', 0.3, 0.2);
+                setTimeout(() => isAttacking = false, 400); 
+            } 
+            else if (type === 'barrage') {
+                let count = 0; let interval = setInterval(() => { 
+                    executeStrike(0.1, 15, "ORA!"); playSound(400 + (count * 20), 'sine', 0.05, 0.1);
+                    count++; if (count > 12) { clearInterval(interval); isAttacking = false; } 
+                }, 100);
+            }
+            else if (type === 'ultra') {
+                rage = 0; rageFill.style.width = "0%"; rageBtn.style.display = "none";
+                let count = 0; let interval = setInterval(() => { 
+                    executeStrike(0.2, 10, "ORA!", true, true); playSound(200 + (Math.random()*400), 'square', 0.05, 0.1);
+                    count++; if (count > 60) { clearInterval(interval); isAttacking = false; updateStory(); } 
+                }, 40);
+            }
+        }
+
+        function executeStrike(damage, vibration, text, shake = false, isUltra = false) {
+            zee.classList.remove('punch-anim', 'kick-anim', 'recoil');
+            void zee.offsetWidth; zee.classList.add(damage > 1 ? 'kick-anim' : 'punch-anim');
+            setTimeout(() => {
+                const isBlocked = !isUltra && Math.random() < 0.85;
+                if (isBlocked) {
+                    dee.innerText = "🛡️"; zee.classList.add('recoil'); playSound(800, 'sine', 0.05, 0.05);
+                } else {
+                    dee.innerText = "😵"; document.body.style.background = "#4b1313";
+                    playSound(1000, 'sawtooth', 0.1, 0.2); if (navigator.vibrate) navigator.vibrate(vibration);
+                }
+                setTimeout(() => { dee.innerText = hp > 0 ? "🤕" : "🩹"; document.body.style.background = hp > 0 ? "var(--grey)" : "var(--pink)"; }, 100);
+            }, 80);
+            hp -= damage; if (hp < 0) hp = 0;
+            deeHpFill.style.width = hp + "%";
+            if (!isUltra && rage < 100 && hp > 0) { 
+                rage += 10; rageFill.style.width = rage + "%"; 
+                if (rage >= 100) { rageBtn.style.display = "flex"; }
+            }
+            updateStory();
+        }
+
+        function updateStory() {
+            if (hp <= 98 && hp > 75) diag.innerText = "I didn't mean it all that I've said.";
+            else if (hp <= 75 && hp > 45) diag.innerText = "It's okay, let it all out.";
+            else if (hp <= 45 && hp > 15) diag.innerText = "I'm right here. I'm listening.";
+            else if (hp <= 15 && hp > 0) diag.innerText = "I'm not going anywhere, love.";
+            else if (hp <= 0) {
+                zee.innerText = "🥺"; 
+                skillBar.style.display = "none"; 
+                btnGroup.style.display = "flex";
+                if (!hasReadLetter) {
+                    diag.innerText = "I... I brought you something.";
+                    document.getElementById('open-letter-btn').style.display = "block";
+                } else {
+                    diag.innerText = "Are you satisfied now?";
+                    document.getElementById('retry-btn').style.display = "block";
+                    document.getElementById('forgive-btn').style.display = "block";
+                }
+            }
+        }
+
+        function openLetter() {
+            document.getElementById('letter-modal').classList.add('active');
+            playSound(400, 'sine', 0.2, 0.1);
+        }
+
+        function forgiveFromLetter() {
+            hasReadLetter = true;
+            document.getElementById('letter-modal').classList.remove('active');
+            document.getElementById('open-letter-btn').style.display = 'none';
+            updateStory(); 
+        }
+
+        function resetAnger(isRetrying) {
+            hp = 100; rage = 0; deeHpFill.style.width = "100%"; rageFill.style.width = "0%";
+            zee.innerText = "😤"; dee.innerText = "🧍‍♂️"; 
+            diag.innerText = isRetrying ? "Go ahead. I won't stop you." : "I'm really sorry love, vent your anger";
+            skillBar.style.display = "flex"; btnGroup.style.display = "none";
+            document.getElementById('retry-btn').style.display = "none";
+            document.getElementById('forgive-btn').style.display = "none";
+        }
+
+        function finish() {
+            btnGroup.style.display = "none"; flash.style.opacity = "1";
+            document.getElementById('zee-hud').style.opacity = "0"; document.getElementById('dee-hud').style.opacity = "0";
+            
+            let monitor = setInterval(() => { playSound(600, 'sine', 0.1, 0.03, false); }, 1500);
+
+            setTimeout(() => {
+                // NURSE AND HOSPITAL BACK ON DUTY
+                dee.innerText = "🏥"; 
+                zee.innerText = "👩‍⚕️";
+                diag.innerText = "Dee is recovering from the pain...";
+                document.body.style.background = "#ffffff"; flash.style.opacity = "0";
+                setTimeout(() => {
+                    clearInterval(monitor);
+                    playVictoryMelody(); 
+                    flash.style.opacity = "1";
+                    setTimeout(() => {
+                        dee.innerText = "😊"; zee.innerText = "🥰"; 
+                        document.getElementById('home-bg').style.opacity = "0.2";
+                        diag.innerText = "He's home now. He missed you.";
+                        document.body.style.background = "#fff9e6"; flash.style.opacity = "0";
+                        btnGroup.style.display = "flex";
+                        document.getElementById('hug-btn').style.display = "block";
+                        document.getElementById('retry-btn').style.display = "none";
+                        document.getElementById('forgive-btn').style.display = "none";
+                    }, 1500);
+                }, 3000);
+            }, 1500);
+        }
+
+        function hugAction() {
+            document.getElementById('hug-btn').style.display = "none";
+            zee.style.display = "none";
+            dee.innerText = "🫂";
+            diag.innerText = "Everything is okay now. ❤️";
+            playSound(60, 'sine', 0.4, 0.2, false);
+            setTimeout(() => playSound(55, 'sine', 0.4, 0.2, false), 200);
+            if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+            for(let i=0; i<15; i++) {
+                setTimeout(() => {
+                    playSound(800 + (Math.random() * 400), 'sine', 0.2, 0.05, false);
+                    const h = document.createElement('div'); h.innerText = '❤️';
+                    h.style.position = 'absolute'; h.style.left = Math.random()*90+'vw'; h.style.top = '100vh';
+                    h.style.animation = 'floatUp 2s forwards'; h.style.fontSize = '20px'; document.body.appendChild(h);
+                }, i*150);
+            }
+        }
+    </script>
+</body>
+</html>
